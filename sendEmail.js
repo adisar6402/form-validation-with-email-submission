@@ -1,41 +1,30 @@
-const nodemailer = require('nodemailer'); 
-const mongoose = require('mongoose');
-require('dotenv').config();
-
-// Database setup and connection to MongoDB
-mongoose.connect(process.env.MONGODB_URI, { 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true 
-});
-
-// Event listeners for the database connection
-const db = mongoose.connection;
-db.on('error', (error) => {
-    console.error('MongoDB connection error:', error); // Improved error logging
-});
-db.once('open', () => {
-    console.log('MongoDB connected successfully');
-});
-
-// Define the email schema
-const emailSchema = new mongoose.Schema({
-    to: String,
-    subject: String,
-    body: String,
-    date: { type: Date, default: Date.now }
-});
-
-const Email = mongoose.model('Email', emailSchema);
+const nodemailer = require('nodemailer');
+const Email = require('./Email'); // Import the Email model
 
 // Function to send email and save details to the database
 const sendEmail = async (to, subject, body) => {
-    // Log the recipient, subject, and body to see what is being sent
     console.log('Preparing to send email...');
-    console.log('Recipient:', to); // Log the recipient
-    console.log('Subject:', subject); // Log the subject
-    console.log('Body:', body); // Log the body
+    console.log('Recipient:', to);
+    console.log('Subject:', subject);
+    console.log('Body:', body);
 
     try {
+        // Log the body to ensure the structure is correct
+        console.log('Received body object:', body);
+
+        // Validate required fields in the body
+        if (!body.name || !body.contact) {
+            throw new Error('Name and contact method are required');
+        }
+
+        // Convert the body object to a string for the email
+        const bodyString = `
+            Name: ${body.name}
+            Email: ${body.email}
+            Preferred Contact: ${body.contact}
+            ${body.phone ? `Phone: ${body.phone}` : ''}
+        `;
+
         // Create a transporter using Gmail's SMTP server
         let transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -50,24 +39,26 @@ const sendEmail = async (to, subject, body) => {
             from: process.env.GMAIL_USER, // Sender email
             to: to,
             subject: subject,
-            text: body
+            text: bodyString, // For plain text
+            html: `<p>${bodyString.replace(/\n/g, '<br>')}</p>` // Converts new lines to <br> tags for HTML
         };
 
         // Send the email
         let info = await transporter.sendMail(mailOptions);
         console.log('Email sent successfully:', info.response);
 
-        // Save email to the MongoDB database
-        const email = new Email({
-            to: to,
-            subject: subject,
-            body: body
+        // Save email details to the MongoDB database
+        const emailDetails = new Email({
+            name: body.name, // Ensure body.name is correctly passed
+            email: to,
+            contact: body.contact,
+            phone: body.phone || '' // Default to empty string if phone is not provided
         });
-
-        await email.save();
+        await emailDetails.save();
         console.log('Email details saved to the database');
     } catch (error) {
-        console.error('Error occurred during email sending or database save:', error); // More detailed error logging
+        console.error('Error occurred during email sending or database save:', error);
+        throw error; // Throw the error to handle it in the calling function
     }
 };
 

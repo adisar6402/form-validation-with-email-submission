@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,25 +11,22 @@
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-
 <body>
-
     <!-- Header Section -->
-    <header style="background-image: url('images/hero-background.jpg'); background-size: cover; text-align: center; padding: 60px 20px; color: #fff;">
-        <h1 style="font-size: 2.5em; margin: 0;">Interactive Form Data Processing</h1>
-        <p style="font-size: 1.2em; margin-top: 10px;">Empowering seamless user interactions with real-time feedback and data processing</p>
+    <header class="header-section">
+        <h1>Interactive Form Data Processing</h1>
+        <p>Empowering seamless user interactions with real-time feedback and data processing</p>
     </header>
 
-    <!-- Main Content -->
-    <main style="max-width: 1200px; margin: 40px auto; padding: 0 20px; font-family: 'Roboto', sans-serif;">
-
+    <!-- Main Content --> 
+    <main class="main-content">
         <!-- About Me Section -->
-        <section id="about-me" style="display: flex; align-items: center; margin-bottom: 40px;">
-            <div style="flex: 1;">
-                <img src="images/photo.jpg" alt="Profile Picture" style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover;">
+        <section id="about-me" class="about-me-section">
+            <div class="profile-image-container">
+                <img src="images/photo.jpg" alt="Abdulrahman's Profile Picture" class="profile-image">
             </div>
-            <div style="flex: 3; padding-left: 20px;">
-                <h2 style="margin-bottom: 15px;">About Me</h2>
+            <div class="about-me-text">
+                <h2>About Me</h2>
                 <p>
                     Hello! I'm Abdulrahman, a passionate front-end developer and AI enthusiast. With a solid background in web technologies and machine learning,
                     I enjoy building dynamic, user-centric websites that seamlessly blend functionality and creativity. Currently, I'm honing my skills in JavaScript
@@ -43,125 +39,138 @@
         </section>
 
         <!-- Form Section -->
-        <section id="form-section" style="background-image: url('images/form-background.jpg'); padding: 20px; margin: 40px 0;">
+        <section id="form-section" class="form-section">
             <h2>Contact Information</h2>
-            <p style="font-size: 1.1em; margin-bottom: 20px;">
-                Please fill out the form below to get in touch. Your information will be processed securely, and we'll get back to you shortly.
-            </p>
-            <!-- Form Action -->
-            <form id="userForm" style="background: #fff; padding: 20px; border-radius: 8px; max-width: 600px;" action="/send-email" method="POST">
-                <label for="name" style="display: block; margin-bottom: 10px;">Name:</label>
-                <input type="text" id="name" name="name" required style="width: 100%; padding: 10px; margin-bottom: 20px;" autocomplete="name" placeholder="Enter your name" title="Please enter your name">
+            <p>Please fill out the form below to get in touch. Your information will be processed securely, and we'll get back to you shortly.</p>
+            <form id="userForm" enctype="multipart/form-data" method="POST" action="/send-email">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required autocomplete="name">
 
-                <label for="email" style="display: block; margin-bottom: 10px;">Email:</label>
-                <input type="email" id="email" name="email" required style="width: 100%; padding: 10px; margin-bottom: 20px;" autocomplete="email" placeholder="Enter your email" title="Please enter your email address">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required autocomplete="email">
 
-                <label for="contact" style="display: block; margin-bottom: 10px;">Preferred Contact Method:</label>
-                <select id="contact" name="contact" required style="width: 100%; padding: 10px; margin-bottom: 20px;" title="Select your preferred contact method">
+                <label for="contact">Preferred Contact Method:</label>
+                <select id="contact" name="contact" required>
                     <option value="" disabled selected>Select a contact method</option>
                     <option value="email">Email</option>
                     <option value="phone">Phone</option>
                 </select>
 
-                <!-- Phone input (initially hidden) -->
                 <label for="phoneInput" style="display: none;" id="phoneLabel">Phone Number:</label>
-                <input type="tel" id="phoneInput" name="phone" style="display: none; width: 100%; padding: 10px; margin-bottom: 20px;" autocomplete="tel" placeholder="Enter your phone number" title="Please enter your phone number">
+                <input type="tel" id="phoneInput" name="phone" style="display: none;" autocomplete="tel">
 
-                <label style="margin-bottom: 20px;">
+                <label>
                     <input type="checkbox" id="terms" name="terms" required> I accept the terms and conditions
                 </label>
 
-                <button type="submit" id="submitBtn" style="padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 5px;">Submit</button>
+                <button type="submit" id="submitBtn">Submit</button>
+
                 <p id="formMessage" style="color: green; display: none;">Thank you! Your submission was received successfully.</p>
                 <p id="formError" style="color: red; display: none;">Oops! Something went wrong. Please try again later.</p>
             </form>
         </section>
 
         <!-- Divider Image -->
-        <div style="background-image: url('images/divider.jpg'); height: 60px; margin-bottom: 40px;"></div>
+        <div class="divider"></div>
 
-        <!-- Form Summary Section -->
-        <section id="formSummary" style="display: flex; justify-content: space-between; align-items: center;">
-            <div style="flex: 1;">
+        <!-- Form Submission Summary -->
+        <section id="formSummary" class="form-summary">
+            <div>
                 <h2>Form Submission Summary</h2>
-                <p id="summary" style="font-size: 1.1em;">
-                    Upon successful submission, your form details will appear here.
-                </p>
+                <p id="summary">Upon successful submission, your form details will appear here.</p>
             </div>
-            <div style="flex: 1;">
-                <img src="images/form-summary-illustration.jpg" alt="Summary Illustration" style="max-width: 100%; height: auto;">
+            <div>
+                <img src="images/form-summary-illustration.jpg" alt="Summary Illustration" class="summary-illustration">
             </div>
         </section>
-
     </main>
 
     <!-- Footer Section with Social Media Links -->
-    <footer style="background-image: url('images/footer-background.jpg'); background-size: cover; text-align: center; color: white; padding: 20px; margin-top: 40px;">
+    <footer class="footer-section">
         <p>&copy; 2024 Abdulrahman | Interactive Form Handling Project</p>
+
         <!-- Social Media Icons -->
-        <div style="margin-top: 20px;">
-            <a href="https://github.com/adisar6402" target="_blank" style="color: white; margin-right: 10px;" title="GitHub Profile"><i class="fab fa-github fa-2x"></i></a>
-            <a href="https://twitter.com/RahmanAdis42469" target="_blank" style="color: white; margin-right: 10px;" title="Twitter Profile"><i class="fab fa-twitter fa-2x"></i></a>
-            <a href="https://www.linkedin.com/in/abdulrahman--engineering-ai-ml/" target="_blank" style="color: white; margin-right: 10px;" title="LinkedIn Profile"><i class="fab fa-linkedin fa-2x"></i></a>
-            <a href="https://facebook.com/Abdulrahman.Adisa.Amuda2000" target="_blank" style="color: white; margin-right: 10px;" title="Facebook Profile"><i class="fab fa-facebook fa-2x"></i></a>
+        <div class="social-icons">
+            <a href="https://github.com/adisar6402" target="_blank" title="GitHub Profile">
+                <i class="fab fa-github fa-2x"></i> GitHub
+            </a>
+            <a href="https://twitter.com/RahmanAdis42469" target="_blank" title="Twitter Profile">
+                <i class="fab fa-twitter fa-2x"></i> Twitter
+            </a>
+            <a href="https://www.linkedin.com/in/abdulrahman--engineering-ai-ml/" target="_blank" title="LinkedIn Profile">
+                <i class="fab fa-linkedin fa-2x"></i> LinkedIn
+            </a>
+            <a href="https://facebook.com/Abdulrahman.Adisa.Amuda2000" target="_blank" title="Facebook Profile">
+                <i class="fab fa-facebook fa-2x"></i> Facebook
+            </a>
         </div>
-        <p style="margin-top: 20px;">
-            <a href="privacy-policy.html" style="color: white;">Privacy Policy</a> | 
-            <a href="terms-conditions.html" style="color: white;">Terms and Conditions</a>
+
+        <p>
+            <a href="privacy-policy.html">Privacy Policy</a> |
+            <a href="terms-conditions.html">Terms and Conditions</a>
         </p>
     </footer>
 
     <!-- JavaScript -->
     <script>
-        // Handle visibility of phone input based on selected contact method
+        // Function to handle the visibility of the phone input based on the selected contact method
         document.getElementById('contact').addEventListener('change', function () {
             const phoneInput = document.getElementById('phoneInput');
             const phoneLabel = document.getElementById('phoneLabel');
             if (this.value === 'phone') {
-                phoneInput.style.display = 'block';  // Show phone number input
-                phoneLabel.style.display = 'block';   // Show phone label
+                phoneInput.style.display = 'block';  // Show phone input
+                phoneLabel.style.display = 'block';  // Show phone label
             } else {
-                phoneInput.style.display = 'none';    // Hide phone number input
-                phoneLabel.style.display = 'none';  
+                phoneInput.style.display = 'none';  // Hide phone input
+                phoneLabel.style.display = 'none';  // Hide phone label
             }
         });
 
-        // Handle form submission with feedback messages
-        document.getElementById('userForm').addEventListener('submit', async function(event) {
+        // Function to handle form submission and provide real-time feedback
+        document.getElementById('userForm').addEventListener('submit', async function (event) {
             event.preventDefault();  // Prevent default form submission
-            
-            const formData = new FormData(this);  // Create FormData object
-            const formMessage = document.getElementById('formMessage');
-            const formError = document.getElementById('formError');
-            const summary = document.getElementById('summary');
-
+            const formData = new FormData(this);  // Capture form data
             try {
-                // Example of AJAX submission to a server (action URL should be set)
-                const response = await fetch(this.action, {
-                    method: this.method,
-                    body: formData
+                console.log('FormData:', Array.from(formData.entries()));  // Log FormData to console
+                const response = await fetch('/send-email', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json',
+                    }
                 });
-
                 if (response.ok) {
-                    // Show success message and populate summary
-                    formMessage.style.display = 'block';
-                    formError.style.display = 'none';
-                    const formDataSummary = `
-                        Name: ${formData.get('name')}<br>
-                        Email: ${formData.get('email')}<br>
-                        Contact Method: ${formData.get('contact')}${formData.get('phone') ? `<br>Phone: ${formData.get('phone')}` : ''}
-                    `;
-                    summary.innerHTML = formDataSummary;
+                    // If form submission is successful
+                    document.getElementById('formMessage').style.display = 'block';
+                    document.getElementById('formError').style.display = 'none';
+                    // Optionally, display form submission summary
+                    displayFormSummary(formData);
+                    this.reset();  // Reset the form after successful submission
                 } else {
                     throw new Error('Form submission failed');
                 }
             } catch (error) {
-                // Show error message
-                formError.style.display = 'block';
-                formMessage.style.display = 'none';
+                // If an error occurs during form submission
+                console.error('There was a problem with your submission:', error);
+                document.getElementById('formError').style.display = 'block';
+                document.getElementById('formMessage').style.display = 'none';
             }
         });
-    </script>
 
+        // Function to display the form submission summary
+        function displayFormSummary(formData) {
+            const summaryElement = document.getElementById('summary');
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const contact = formData.get('contact');
+            const phone = formData.get('phone');
+            summaryElement.innerHTML = `
+                <strong>Form Submission Summary:</strong><br>
+                Name: ${name}<br>
+                Email: ${email}<br>
+                Preferred Contact: ${contact === 'phone' ? `Phone (${phone})` : 'Email'}
+            `;
+        }
+    </script>
 </body>
 </html>
