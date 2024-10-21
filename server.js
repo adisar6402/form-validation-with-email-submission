@@ -5,6 +5,7 @@ const cors = require('cors');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const multer = require('multer'); // Import multer for handling form data
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -45,6 +46,7 @@ app.get('/', (req, res) => {
 // Email route
 app.post('/send-email', async (req, res) => {
     console.log('Received form data:', req.body); // This should log the form data
+
     const { name, email, contact, phone } = req.body;
 
     // Validate inputs
@@ -75,7 +77,7 @@ app.post('/send-email', async (req, res) => {
     try {
         // Pass the email body object instead of plain string
         await sendEmail(email, 'Form Submission', emailBody);
-        
+
         // Save form details to MongoDB
         const formDetails = new Email({ name, email, contact, phone });
         await formDetails.save();
