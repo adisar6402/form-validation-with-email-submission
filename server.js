@@ -51,18 +51,22 @@ app.post('/send-email', async (req, res) => {
 
     // Validate inputs
     if (!name || name.trim() === '') {
+        console.error('Validation Error: Name is required.');
         return res.status(400).json({ message: 'Validation Error: Name is required.' });
     }
     if (!email || email.trim() === '') {
+        console.error('Validation Error: Email is required.');
         return res.status(400).json({ message: 'Validation Error: Email is required.' });
     }
 
     // Basic email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+        console.error('Validation Error: Please enter a valid email address.');
         return res.status(400).json({ message: 'Validation Error: Please enter a valid email address.' });
     }
     if (contact === 'phone' && (!phone || phone.trim() === '')) {
+        console.error('Validation Error: Phone number is required if the contact method is phone.');
         return res.status(400).json({ message: 'Validation Error: Phone number is required if the contact method is phone.' });
     }
 
@@ -93,3 +97,4 @@ app.post('/send-email', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
+

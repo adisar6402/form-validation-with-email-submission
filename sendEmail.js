@@ -7,7 +7,6 @@ const sendEmail = async (to, subject, body) => {
     console.log('Recipient:', to);
     console.log('Subject:', subject);
     console.log('Body:', body);
-
     try {
         // Log the body to ensure the structure is correct
         console.log('Received body object:', body);
@@ -66,7 +65,6 @@ const sendEmail = async (to, subject, body) => {
             Best regards,
             Your Team
         `;
-
         await transporter.sendMail({
             from: process.env.GMAIL_USER,
             to: body.email, // Send confirmation to the user's email
@@ -75,7 +73,6 @@ const sendEmail = async (to, subject, body) => {
             html: `<p>${confirmationBody.replace(/\n/g, '<br>')}</p>`
         });
         console.log('Confirmation email sent to user:', body.email);
-
     } catch (error) {
         console.error('Error occurred during email sending or database save:', error);
         throw error; // Throw the error to handle it in the calling function
