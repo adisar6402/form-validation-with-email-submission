@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
 });
 
 // Email route
-app.post('/send-email', async (req, res) => {
+app.post('/.netlify/functions/send-email', async (req, res) => {
     console.log('Received form data:', req.body); // This should log the form data
 
     const { name, email, contact, phone } = req.body;
@@ -88,7 +88,8 @@ app.post('/send-email', async (req, res) => {
 
         res.status(200).json({ message: 'Email sent and details saved successfully' });
     } catch (error) {
-        console.error('Error occurred while sending email and saving details:', error);
+        console.error('Error occurred while sending email and saving details:', error.message);
+        console.error('Stack trace:', error.stack);
         res.status(500).json({ message: 'Error sending email and saving details' });
     }
 });
@@ -97,4 +98,3 @@ app.post('/send-email', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
-
