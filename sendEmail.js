@@ -74,7 +74,8 @@ const sendEmail = async (to, subject, body) => {
         });
         console.log('Confirmation email sent to user:', body.email);
     } catch (error) {
-        console.error('Error occurred during email sending or database save:', error);
+        console.error('Error occurred during email sending or database save:', error.message);
+        console.error('Stack trace:', error.stack);
         throw error; // Throw the error to handle it in the calling function
     }
 };
