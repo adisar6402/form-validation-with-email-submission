@@ -14,7 +14,15 @@ const emailSchema = new mongoose.Schema({
         }
     },
     contact: { type: String, required: true },
-    phone: { type: String }
+    phone: { 
+        type: String, 
+        validate: {
+            validator: function(v) {
+                return !v || /^[0-9]{10,15}$/.test(v); // Optional phone number validation (10-15 digits)
+            },
+            message: props => `${props.value} is not a valid phone number!`
+        }
+    }
 });
 
 // Create the model from the schema

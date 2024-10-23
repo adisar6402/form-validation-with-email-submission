@@ -18,7 +18,7 @@
         <p>Empowering seamless user interactions with real-time feedback and data processing</p>
     </header>
 
-    <!-- Main Content --> 
+    <!-- Main Content -->
     <main class="main-content">
         <!-- About Me Section -->
         <section id="about-me" class="about-me-section">
@@ -39,31 +39,30 @@
         </section>
 
         <!-- Form Section -->
-<section id="form-section" class="form-section">
-    <h2>Contact Information</h2>
-    <p>Please fill out the form below to get in touch. Your information will be processed securely, and we'll get back to you shortly.</p>
-    <form id="userForm" enctype="multipart/form-data" method="POST" action="/.netlify/functions/send-email">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required autocomplete="name">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required autocomplete="email">
-        <label for="contact">Preferred Contact Method:</label>
-        <select id="contact" name="contact" required>
-            <option value="" disabled selected>Select a contact method</option>
-            <option value="email">Email</option>
-            <option value="phone">Phone</option>
-        </select>
-        <label for="phoneInput" style="display: none;" id="phoneLabel">Phone Number:</label>
-        <input type="tel" id="phoneInput" name="phone" style="display: none;" autocomplete="tel">
-        <label>
-            <input type="checkbox" id="terms" name="terms" required> I accept the terms and conditions
-        </label>
-        <button type="submit" id="submitBtn">Submit</button>
-        <p id="formMessage" style="color: green; display: none;">Thank you! Your submission was received successfully.</p>
-        <p id="formError" style="color: red; display: none;">Oops! Something went wrong. Please try again later.</p>
-    </form>
-</section>
-
+        <section id="form-section" class="form-section">
+            <h2>Contact Information</h2>
+            <p>Please fill out the form below to get in touch. Your information will be processed securely, and we'll get back to you shortly.</p>
+            <form id="userForm" enctype="multipart/form-data" method="POST" action="/.netlify/functions/send-email">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required autocomplete="name">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required autocomplete="email">
+                <label for="contact">Preferred Contact Method:</label>
+                <select id="contact" name="contact" required>
+                    <option value="" disabled selected>Select a contact method</option>
+                    <option value="email">Email</option>
+                    <option value="phone">Phone</option>
+                </select>
+                <label for="phoneInput" style="display: none;" id="phoneLabel">Phone Number:</label>
+                <input type="tel" id="phoneInput" name="phone" style="display: none;" autocomplete="tel">
+                <label>
+                    <input type="checkbox" id="terms" name="terms" required> I accept the terms and conditions
+                </label>
+                <button type="submit" id="submitBtn">Submit</button>
+                <p id="formMessage" style="color: green; display: none;">Thank you! Your submission was received successfully.</p>
+                <p id="formError" style="color: red; display: none;">Oops! Something went wrong. Please try again later.</p>
+            </form>
+        </section>
 
         <!-- Divider Image -->
         <div class="divider"></div>
@@ -83,7 +82,6 @@
     <!-- Footer Section with Social Media Links -->
     <footer class="footer-section">
         <p>&copy; 2024 Abdulrahman | Interactive Form Handling Project</p>
-
         <!-- Social Media Icons -->
         <div class="social-icons">
             <a href="https://github.com/adisar6402" target="_blank" title="GitHub Profile">
@@ -99,7 +97,6 @@
                 <i class="fab fa-facebook fa-2x"></i> Facebook
             </a>
         </div>
-
         <p>
             <a href="privacy-policy.html">Privacy Policy</a> |
             <a href="terms-conditions.html">Terms and Conditions</a>
@@ -127,7 +124,7 @@
             const formData = new FormData(this);  // Capture form data
             try {
                 console.log('FormData:', Array.from(formData.entries()));  // Log FormData to console
-                const response = await fetch('/send-email', {
+                const response = await fetch('/.netlify/functions/send-email', {
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -142,6 +139,9 @@
                     displayFormSummary(formData);
                     this.reset();  // Reset the form after successful submission
                 } else {
+                    // Log the response status and text for debugging
+                    const errorText = await response.text();
+                    console.error('Form submission failed:', response.status, errorText);
                     throw new Error('Form submission failed');
                 }
             } catch (error) {
@@ -163,7 +163,7 @@
                 <strong>Form Submission Summary:</strong><br>
                 Name: ${name}<br>
                 Email: ${email}<br>
-                Preferred Contact: ${contact === 'phone' ? `Phone (${phone})` : 'Email'}
+                Preferred Contact: ${contact === 'phone' ? \`Phone (\${phone})\` : 'Email'}
             `;
         }
     </script>

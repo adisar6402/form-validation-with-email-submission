@@ -4,20 +4,15 @@ const Email = require('./Email'); // Import the Email model
 const cors = require('cors');
 require('dotenv').config();
 const mongoose = require('mongoose');
-const multer = require('multer'); // Import multer for handling form data
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
-app.use(express.static(__dirname)); // Serve static files from the form-data-api directory
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// Initialize multer for form-data handling
-const upload = multer();
-app.use(upload.none()); // This will handle non-file multipart/form-data
+app.use(cors()); // Enable CORS
+app.use(express.static(__dirname)); // Serve static files like HTML
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (from forms)
+app.use(express.json()); // Parse JSON bodies (from APIs or AJAX requests)
 
 // Middleware to prevent caching
 app.use((req, res, next) => {
@@ -33,19 +28,28 @@ app.use((req, res, next) => {
     next();
 });
 
-// Connect to MongoDB using the connection string from the .env file
+// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB connected successfully'))
-    .catch(err => console.error('MongoDB connection error:', err));
+    .then(() => {
+        console.log('MongoDB connected successfully');
+
+        // Start the server after a successful connection
+        app.listen(port, () => {
+            console.log(`Server running on port ${port}`);
+        });
+    })
+    .catch(err => {
+        console.error('MongoDB connection error:', err);
+    });
 
 // Root route
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html'); // Serve index.html from the root of form-data-api
+    res.sendFile(__dirname + '/index.html'); // Serve index.html
 });
 
 // Email route
-app.post('/.netlify/functions/send-email', async (req, res) => {
-    console.log('Received form data:', req.body); // This should log the form data
+app.post('/send-email', async (req, res) => {
+    console.log('Received form data:', req.body); // Log the form data
 
     const { name, email, contact, phone } = req.body;
 
@@ -70,7 +74,7 @@ app.post('/.netlify/functions/send-email', async (req, res) => {
         return res.status(400).json({ message: 'Validation Error: Phone number is required if the contact method is phone.' });
     }
 
-    // Construct the email body as an object to pass correctly
+    // Construct the email body
     const emailBody = {
         name: name,
         email: email,
@@ -79,22 +83,18 @@ app.post('/.netlify/functions/send-email', async (req, res) => {
     };
 
     try {
-        // Pass the email body object instead of plain string
+        // Send email
         await sendEmail(email, 'Form Submission', emailBody);
+        console.log('Email sent successfully.');
 
         // Save form details to MongoDB
         const formDetails = new Email({ name, email, contact, phone });
         await formDetails.save();
+        console.log('Form details saved to MongoDB.');
 
         res.status(200).json({ message: 'Email sent and details saved successfully' });
     } catch (error) {
-        console.error('Error occurred while sending email and saving details:', error.message);
-        console.error('Stack trace:', error.stack);
+        console.error('Error occurred:', error.message);
         res.status(500).json({ message: 'Error sending email and saving details' });
     }
-});
-
-// Start server
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
 });
