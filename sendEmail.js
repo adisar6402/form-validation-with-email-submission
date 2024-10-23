@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const Email = require('./Email'); // Import the Email model
+const Email = require('./Email'); // Ensure this path is correct
 
 // Function to send email and save details to the database
 const sendEmail = async (to, subject, body) => {
