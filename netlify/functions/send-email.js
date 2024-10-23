@@ -17,7 +17,7 @@ const sendEmail = async (to, subject, body) => {
             Name: ${body.name}
             Email: ${body.email}
             Preferred Contact: ${body.contact}
-            ${body.phone ? \`Phone: \${body.phone}\` : ''}
+            ${body.phone ? `Phone: ${body.phone}` : ''}
         `;
 
         // Create a transporter using Gmail's SMTP server
@@ -35,7 +35,7 @@ const sendEmail = async (to, subject, body) => {
             to: to, // Recipient email
             subject: subject,
             text: bodyString.trim(), // Plain text email
-            html: \`<p>\${bodyString.trim().replace(/\\n/g, '<br>')}</p>\`, // HTML email with line breaks
+            html: `<p>${bodyString.trim().replace(/\n/g, '<br>')}</p>`, // HTML email with line breaks
             replyTo: process.env.GMAIL_USER // Set reply-to address
         };
 
@@ -66,7 +66,7 @@ const sendEmail = async (to, subject, body) => {
             to: body.email, // Send confirmation to the user's email
             subject: confirmationSubject,
             text: confirmationBody.trim(),
-            html: \`<p>\${confirmationBody.trim().replace(/\\n/g, '<br>')}</p>\`
+            html: `<p>${confirmationBody.trim().replace(/\n/g, '<br>')}</p>`
         });
         console.log('Confirmation email sent to user:', body.email);
 
