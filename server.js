@@ -22,6 +22,12 @@ app.use((req, res, next) => {
     next();
 });
 
+// Middleware to add security headers
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff'); // Prevent MIME type sniffing
+    next();
+});
+
 // Middleware to log requests
 app.use((req, res, next) => {
     console.log(`${req.method} request for '${req.url}'`);
@@ -109,4 +115,5 @@ app.post('/send-email', async (req, res) => {
         }
     }
 });
+
 
