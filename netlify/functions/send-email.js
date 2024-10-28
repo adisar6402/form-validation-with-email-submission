@@ -75,7 +75,6 @@ const sendEmail = async (to, subject, body) => {
             statusCode: 200,
             body: JSON.stringify({ message: "Email sent and details saved successfully!" })
         };
-
     } catch (error) {
         console.error('Error occurred during email sending or database save:', error.message);
         return {
@@ -86,4 +85,4 @@ const sendEmail = async (to, subject, body) => {
 };
 
 // Ensure this file exports the function correctly
-module.exports = sendEmail;
+exports.handler = sendEmail;
