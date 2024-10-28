@@ -1,118 +1,172 @@
-const express = require('express');
-const sendEmail = require('./sendEmail');
-const Email = require('./Email'); // Import the Email model
-const cors = require('cors');
-require('dotenv').config();
-const mongoose = require('mongoose');
-const sanitize = require('mongo-sanitize'); // Use to sanitize inputs
-const emailValidator = require('email-validator'); // Use to validate email format
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Form Handling</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header-section">
+        <h1>Interactive Form Data Processing</h1>
+        <p>Empowering seamless user interactions with real-time feedback and data processing</p>
+    </header>
 
-const app = express();
-const port = process.env.PORT || 3000;
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- About Me Section -->
+        <section id="about-me" class="about-me-section">
+            <div class="profile-image-container">
+                <img src="images/photo.jpg" alt="Abdulrahman's Profile Picture" class="profile-image">
+            </div>
+            <div class="about-me-text">
+                <h2>About Me</h2>
+                <p>
+                    Hello! I'm Abdulrahman, a passionate front-end developer and AI enthusiast. With a solid background in web technologies and machine learning,
+                    I enjoy building dynamic, user-centric websites that seamlessly blend functionality and creativity. Currently, I'm honing my skills in JavaScript
+                    and data handling, aiming to create more interactive and efficient user experiences.
+                    <br><br>
+                    I believe in continuous learning and love exploring new technologies that push the boundaries of web development. Outside coding, I’m deeply involved
+                    in climate action projects, advocating for sustainability through technology and education.
+                </p>
+            </div>
+        </section>
 
-// Middleware
-app.use(cors()); // Enable CORS
-app.use(express.static(__dirname)); // Serve static files like HTML
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (from forms)
-app.use(express.json()); // Parse JSON bodies (from APIs or AJAX requests)
+        <!-- Form Section -->
+        <section id="form-section" class="form-section">
+            <h2>Contact Information</h2>
+            <p>Please fill out the form below to get in touch. Your information will be processed securely, and we'll get back to you shortly.</p>
+            <form id="userForm" enctype="multipart/form-data" method="POST" action="/.netlify/functions/send-email">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required autocomplete="name">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required autocomplete="email">
+                <label for="contact">Preferred Contact Method:</label>
+                <select id="contact" name="contact" required>
+                    <option value="" disabled selected>Select a contact method</option>
+                    <option value="email">Email</option>
+                    <option value="phone">Phone</option>
+                </select>
+                <label for="phoneInput" style="display: none;" id="phoneLabel">Phone Number:</label>
+                <input type="tel" id="phoneInput" name="phone" style="display: none;" autocomplete="tel">
+                <label>
+                    <input type="checkbox" id="terms" name="terms" required> I accept the terms and conditions
+                </label>
+                <button type="submit" id="submitBtn">Submit</button>
+                <p id="formMessage" style="color: green; display: none;">Thank you! Your submission was received successfully.</p>
+                <p id="formError" style="color: red; display: none;">Oops! Something went wrong. Please try again later.</p>
+            </form>
+        </section>
 
-// Middleware to prevent caching
-app.use((req, res, next) => {
-    res.setHeader('Cache-Control', 'no-store');
-    next();
-});
+        <!-- Divider Image -->
+        <div class="divider"></div>
 
-// Middleware to add security headers
-app.use((req, res, next) => {
-    res.setHeader('X-Content-Type-Options', 'nosniff'); // Prevent MIME type sniffing
-    next();
-});
+        <!-- Form Submission Summary -->
+        <section id="formSummary" class="form-summary">
+            <div>
+                <h2>Form Submission Summary</h2>
+                <p id="summary">Upon successful submission, your form details will appear here.</p>
+            </div>
+            <div>
+                <img src="images/form-summary-illustration.jpg" alt="Summary Illustration" class="summary-illustration">
+            </div>
+        </section>
+    </main>
 
-// Middleware to log requests
-app.use((req, res, next) => {
-    console.log(`${req.method} request for '${req.url}'`);
-    console.log('Headers:', req.headers);
-    console.log('Body:', req.body);
-    next();
-});
+    <!-- Footer Section with Social Media Links -->
+    <footer class="footer-section">
+        <p>&copy; 2024 Abdulrahman | Interactive Form Handling Project</p>
+        <!-- Social Media Icons -->
+        <div class="social-icons">
+            <a href="https://github.com/adisar6402" target="_blank" title="GitHub Profile">
+                <i class="fab fa-github fa-2x"></i> GitHub
+            </a>
+            <a href="https://twitter.com/RahmanAdis42469" target="_blank" title="Twitter Profile">
+                <i class="fab fa-twitter fa-2x"></i> Twitter
+            </a>
+            <a href="https://www.linkedin.com/in/abdulrahman--engineering-ai-ml/" target="_blank" title="LinkedIn Profile">
+                <i class="fab fa-linkedin fa-2x"></i> LinkedIn
+            </a>
+            <a href="https://facebook.com/Abdulrahman.Adisa.Amuda2000" target="_blank" title="Facebook Profile">
+                <i class="fab fa-facebook fa-2x"></i> Facebook
+            </a>
+        </div>
+        <p>
+            <a href="privacy-policy.html">Privacy Policy</a> |
+            <a href="terms-conditions.html">Terms and Conditions</a>
+        </p>
+    </footer>
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('MongoDB connected successfully');
-
-        // Start the server after a successful connection
-        app.listen(port, () => {
-            console.log(`Server running on port ${port}`);
+    <!-- JavaScript -->
+    <script>
+        // Function to handle the visibility of the phone input based on the selected contact method
+        document.getElementById('contact').addEventListener('change', function () {
+            const phoneInput = document.getElementById('phoneInput');
+            const phoneLabel = document.getElementById('phoneLabel');
+            if (this.value === 'phone') {
+                phoneInput.style.display = 'block';  // Show phone input
+                phoneLabel.style.display = 'block';  // Show phone label
+            } else {
+                phoneInput.style.display = 'none';  // Hide phone input
+                phoneLabel.style.display = 'none';  // Hide phone label
+            }
         });
-    })
-    .catch(err => {
-        console.error('MongoDB connection error:', err);
-    });
 
-// Root route
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html'); // Serve index.html
-});
+        // Function to handle form submission and provide real-time feedback
+        document.getElementById('userForm').addEventListener('submit', async function (event) {
+            event.preventDefault();  // Prevent default form submission
+            const formData = new FormData(this);  // Capture form data
+            try {
+                console.log('FormData:', Array.from(formData.entries()));  // Log FormData to console
+                const response = await fetch('/.netlify/functions/send-email', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                if (response.ok) {
+                    // If form submission is successful
+                    document.getElementById('formMessage').style.display = 'block';
+                    document.getElementById('formError').style.display = 'none';
+                    // Optionally, display form submission summary
+                    displayFormSummary(formData);
+                    this.reset();  // Reset the form after successful submission
+                } else {
+                    // Log the response status and text for debugging
+                    const errorText = await response.text();
+                    console.error('Form submission failed:', response.status, errorText);
+                    throw new Error('Form submission failed');
+                }
+            } catch (error) {
+                // If an error occurs during form submission
+                console.error('There was a problem with your submission:', error);
+                document.getElementById('formError').style.display = 'block';
+                document.getElementById('formMessage').style.display = 'none';
+            }
+        });
 
-// Email route
-app.post('/send-email', async (req, res) => {
-    console.log('Received form data:', req.body); // Log the form data
-
-    // Sanitize and validate inputs
-    const { name, email, contact, phone } = req.body;
-
-    const sanitizedInput = {
-        name: sanitize(name),
-        email: sanitize(email),
-        contact: sanitize(contact),
-        phone: sanitize(phone) || '', // Handle phone as optional
-    };
-
-    // Validate inputs
-    if (!sanitizedInput.name || sanitizedInput.name.trim() === '') {
-        console.error('Validation Error: Name is required.');
-        return res.status(400).json({ message: 'Validation Error: Name is required.' });
-    }
-    if (!sanitizedInput.email || sanitizedInput.email.trim() === '') {
-        console.error('Validation Error: Email is required.');
-        return res.status(400).json({ message: 'Validation Error: Email is required.' });
-    }
-    if (!emailValidator.validate(sanitizedInput.email)) {
-        console.error('Validation Error: Please enter a valid email address.');
-        return res.status(400).json({ message: 'Validation Error: Please enter a valid email address.' });
-    }
-    if (sanitizedInput.contact === 'phone' && (!sanitizedInput.phone || sanitizedInput.phone.trim() === '')) {
-        console.error('Validation Error: Phone number is required if the contact method is phone.');
-        return res.status(400).json({ message: 'Validation Error: Phone number is required if the contact method is phone.' });
-    }
-
-    // Construct the email body
-    const emailBody = {
-        name: sanitizedInput.name,
-        email: sanitizedInput.email,
-        contact: sanitizedInput.contact,
-        phone: sanitizedInput.phone,
-    };
-
-    try {
-        // Send email
-        await sendEmail(sanitizedInput.email, 'Form Submission', emailBody);
-        console.log('Email sent successfully.');
-
-        // Save form details to MongoDB
-        const formDetails = new Email(sanitizedInput);
-        await formDetails.save();
-        console.log('Form details saved to MongoDB.');
-
-        res.status(200).json({ message: 'Email sent and details saved successfully' });
-    } catch (error) {
-        console.error('Error occurred:', error.message);
-        if (error instanceof mongoose.Error) {
-            res.status(500).json({ message: 'Error saving details to database' });
-        } else {
-            res.status(500).json({ message: 'Error sending email' });
+        // Function to display the form submission summary
+        function displayFormSummary(formData) {
+            const summaryElement = document.getElementById('summary');
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const contact = formData.get('contact');
+            const phone = formData.get('phone');
+            summaryElement.innerHTML = `
+                <strong>Form Submission Summary:</strong><br>
+                Name: ${name}<br>
+                Email: ${email}<br>
+                Preferred Contact: ${contact === 'phone' ? \`Phone (\${phone})\` : 'Email'}
+            `;
         }
-    }
-});
+    </script>
+</body>
+</html>
 
