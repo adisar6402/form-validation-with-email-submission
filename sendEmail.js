@@ -70,9 +70,18 @@ const sendEmail = async (to, subject, body) => {
         });
         console.log('Confirmation email sent to user:', body.email);
 
+        // Return a success response
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: "Email sent and details saved successfully!" })
+        };
+
     } catch (error) {
         console.error('Error occurred during email sending or database save:', error.message);
-        throw error; // Throw the error to handle it in the calling function
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: error.message }) // Return error message
+        };
     }
 };
 

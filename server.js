@@ -4,6 +4,8 @@ const Email = require('./Email'); // Import the Email model
 const cors = require('cors');
 require('dotenv').config();
 const mongoose = require('mongoose');
+const sanitize = require('mongo-sanitize'); // Use to sanitize inputs
+const emailValidator = require('email-validator'); // Use to validate email format
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -51,50 +53,60 @@ app.get('/', (req, res) => {
 app.post('/send-email', async (req, res) => {
     console.log('Received form data:', req.body); // Log the form data
 
+    // Sanitize and validate inputs
     const { name, email, contact, phone } = req.body;
 
+    const sanitizedInput = {
+        name: sanitize(name),
+        email: sanitize(email),
+        contact: sanitize(contact),
+        phone: sanitize(phone) || '', // Handle phone as optional
+    };
+
     // Validate inputs
-    if (!name || name.trim() === '') {
+    if (!sanitizedInput.name || sanitizedInput.name.trim() === '') {
         console.error('Validation Error: Name is required.');
         return res.status(400).json({ message: 'Validation Error: Name is required.' });
     }
-    if (!email || email.trim() === '') {
+    if (!sanitizedInput.email || sanitizedInput.email.trim() === '') {
         console.error('Validation Error: Email is required.');
         return res.status(400).json({ message: 'Validation Error: Email is required.' });
     }
-
-    // Basic email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailValidator.validate(sanitizedInput.email)) {
         console.error('Validation Error: Please enter a valid email address.');
         return res.status(400).json({ message: 'Validation Error: Please enter a valid email address.' });
     }
-    if (contact === 'phone' && (!phone || phone.trim() === '')) {
+    if (sanitizedInput.contact === 'phone' && (!sanitizedInput.phone || sanitizedInput.phone.trim() === '')) {
         console.error('Validation Error: Phone number is required if the contact method is phone.');
         return res.status(400).json({ message: 'Validation Error: Phone number is required if the contact method is phone.' });
     }
 
     // Construct the email body
     const emailBody = {
-        name: name,
-        email: email,
-        contact: contact,
-        phone: phone || '', // Handle phone as optional
+        name: sanitizedInput.name,
+        email: sanitizedInput.email,
+        contact: sanitizedInput.contact,
+        phone: sanitizedInput.phone,
     };
 
     try {
         // Send email
-        await sendEmail(email, 'Form Submission', emailBody);
+        await sendEmail(sanitizedInput.email, 'Form Submission', emailBody);
         console.log('Email sent successfully.');
 
         // Save form details to MongoDB
-        const formDetails = new Email({ name, email, contact, phone });
+        const formDetails = new Email(sanitizedInput);
         await formDetails.save();
         console.log('Form details saved to MongoDB.');
 
         res.status(200).json({ message: 'Email sent and details saved successfully' });
     } catch (error) {
         console.error('Error occurred:', error.message);
-        res.status(500).json({ message: 'Error sending email and saving details' });
+        if (error instanceof mongoose.Error) {
+            res.status(500).json({ message: 'Error saving details to database' });
+        } else {
+            res.status(500).json({ message: 'Error sending email' });
+        }
     }
 });
+
