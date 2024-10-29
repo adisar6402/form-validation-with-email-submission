@@ -1,12 +1,11 @@
 const express = require('express');
-const sendEmail = require('./sendEmail');
-const Email = require('./Email'); // Import the Email model
+const sendEmail = require('./netlify/functions/send-email');
+const Email = require('./netlify/functions/Email'); // Import the Email model
 const cors = require('cors');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const sanitize = require('mongo-sanitize'); // Use to sanitize inputs
 const emailValidator = require('email-validator'); // Use to validate email format
-
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -40,7 +39,6 @@ app.use((req, res, next) => {
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('MongoDB connected successfully');
-
         // Start the server after a successful connection
         app.listen(port, () => {
             console.log(`Server running on port ${port}`);
@@ -58,10 +56,8 @@ app.get('/', (req, res) => {
 // Email route
 app.post('/send-email', async (req, res) => {
     console.log('Received form data:', req.body); // Log the form data
-
     // Sanitize and validate inputs
     const { name, email, contact, phone } = req.body;
-
     const sanitizedInput = {
         name: sanitize(name),
         email: sanitize(email),
@@ -99,12 +95,10 @@ app.post('/send-email', async (req, res) => {
         // Send email
         await sendEmail(sanitizedInput.email, 'Form Submission', emailBody);
         console.log('Email sent successfully.');
-
         // Save form details to MongoDB
         const formDetails = new Email(sanitizedInput);
         await formDetails.save();
         console.log('Form details saved to MongoDB.');
-
         res.status(200).json({ message: 'Email sent and details saved successfully' });
     } catch (error) {
         console.error('Error occurred:', error.message);
@@ -115,5 +109,3 @@ app.post('/send-email', async (req, res) => {
         }
     }
 });
-
-

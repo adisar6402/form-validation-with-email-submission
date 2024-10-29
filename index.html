@@ -17,7 +17,6 @@
         <h1>Interactive Form Data Processing</h1>
         <p>Empowering seamless user interactions with real-time feedback and data processing</p>
     </header>
-
     <!-- Main Content -->
     <main class="main-content">
         <!-- About Me Section -->
@@ -37,7 +36,6 @@
                 </p>
             </div>
         </section>
-
         <!-- Form Section -->
         <section id="form-section" class="form-section">
             <h2>Contact Information</h2>
@@ -63,10 +61,8 @@
                 <p id="formError" style="color: red; display: none;">Oops! Something went wrong. Please try again later.</p>
             </form>
         </section>
-
         <!-- Divider Image -->
         <div class="divider"></div>
-
         <!-- Form Submission Summary -->
         <section id="formSummary" class="form-summary">
             <div>
@@ -78,7 +74,6 @@
             </div>
         </section>
     </main>
-
     <!-- Footer Section with Social Media Links -->
     <footer class="footer-section">
         <p>&copy; 2024 Abdulrahman | Interactive Form Handling Project</p>
@@ -102,7 +97,6 @@
             <a href="terms-conditions.html">Terms and Conditions</a>
         </p>
     </footer>
-
     <!-- JavaScript -->
     <script>
         // Function to handle the visibility of the phone input based on the selected contact method
@@ -126,8 +120,9 @@
                 console.log('FormData:', Array.from(formData.entries()));  // Log FormData to console
                 const response = await fetch('/.netlify/functions/send-email', {
                     method: 'POST',
-                    body: formData,
+                    body: JSON.stringify(Object.fromEntries(formData)),
                     headers: {
+                        'Content-Type': 'application/json',
                         'Accept': 'application/json',
                     }
                 });
@@ -169,4 +164,3 @@
     </script>
 </body>
 </html>
-
