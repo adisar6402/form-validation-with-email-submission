@@ -116,11 +116,12 @@
         document.getElementById('userForm').addEventListener('submit', async function (event) {
             event.preventDefault();  // Prevent default form submission
             const formData = new FormData(this);  // Capture form data
+            console.log('FormData:', Array.from(formData.entries()));  // Log FormData to console
+            const formDataObj = Object.fromEntries(formData);
             try {
-                console.log('FormData:', Array.from(formData.entries()));  // Log FormData to console
                 const response = await fetch('/.netlify/functions/send-email', {
                     method: 'POST',
-                    body: JSON.stringify(Object.fromEntries(formData)),
+                    body: JSON.stringify(formDataObj),
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
