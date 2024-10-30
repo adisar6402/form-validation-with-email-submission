@@ -1,7 +1,27 @@
-.env
+# Node modules
 node_modules/
-package-lock.json
 
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+
+# Build output
+dist/
+build/
 
 # Local Netlify folder
-.netlify
+.netlify/
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Temporary files
+.DS_Store
+Thumbs.db
+
+# Optional: Ignore package-lock.json (uncomment if you want to exclude it)
+# package-lock.json

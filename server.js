@@ -2,10 +2,12 @@ const express = require('express');
 const sendEmail = require('./netlify/functions/send-email');
 const Email = require('./netlify/functions/Email'); // Import the Email model
 const cors = require('cors');
-require('dotenv').config();
+require('dotenv').config(); // Load environment variables from .env file
 const mongoose = require('mongoose');
 const sanitize = require('mongo-sanitize'); // Use to sanitize inputs
 const emailValidator = require('email-validator'); // Use to validate email format
+const multer = require('multer');
+const upload = multer(); // Initialize multer
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -54,7 +56,7 @@ app.get('/', (req, res) => {
 });
 
 // Email route
-app.post('/send-email', async (req, res) => {
+app.post('/send-email', upload.none(), async (req, res) => {
     console.log('Received form data:', req.body); // Log the form data
     // Sanitize and validate inputs
     const { name, email, contact, phone } = req.body;
@@ -83,29 +85,5 @@ app.post('/send-email', async (req, res) => {
         return res.status(400).json({ message: 'Validation Error: Phone number is required if the contact method is phone.' });
     }
 
-    // Construct the email body
-    const emailBody = {
-        name: sanitizedInput.name,
-        email: sanitizedInput.email,
-        contact: sanitizedInput.contact,
-        phone: sanitizedInput.phone,
-    };
-
-    try {
-        // Send email
-        await sendEmail(sanitizedInput.email, 'Form Submission', emailBody);
-        console.log('Email sent successfully.');
-        // Save form details to MongoDB
-        const formDetails = new Email(sanitizedInput);
-        await formDetails.save();
-        console.log('Form details saved to MongoDB.');
-        res.status(200).json({ message: 'Email sent and details saved successfully' });
-    } catch (error) {
-        console.error('Error occurred:', error.message);
-        if (error instanceof mongoose.Error) {
-            res.status(500).json({ message: 'Error saving details to database' });
-        } else {
-            res.status(500).json({ message: 'Error sending email' });
-        }
-    }
+    // Continue processing the email sending...
 });

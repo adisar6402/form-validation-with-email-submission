@@ -59,6 +59,7 @@
                 <button type="submit" id="submitBtn">Submit</button>
                 <p id="formMessage" style="color: green; display: none;">Thank you! Your submission was received successfully.</p>
                 <p id="formError" style="color: red; display: none;">Oops! Something went wrong. Please try again later.</p>
+                <div id="loading" style="display: none;">Submitting... Please wait.</div> <!-- Loading indicator -->
             </form>
         </section>
         <!-- Divider Image -->
@@ -116,23 +117,27 @@
         document.getElementById('userForm').addEventListener('submit', async function (event) {
             event.preventDefault();  // Prevent default form submission
             const formData = new FormData(this);  // Capture form data
-            const formDataJson = JSON.stringify(Object.fromEntries(formData.entries()));  // Convert to JSON
-            console.log('FormData:', formDataJson);  // Log FormData to console
+            const formDataObj = Object.fromEntries(formData.entries()); // Convert to object
+            console.log('FormData Object:', formDataObj);  // Log FormData object to console
+            document.getElementById('loading').style.display = 'block'; // Show loading indicator
+
             try {
-                const response = await fetch('/.netlify/functions/send-email', {
+                const response = await fetch(http://localhost:3000/send-email', {
                     method: 'POST',
-                    body: formDataJson,
+                    body: JSON.stringify(formDataObj),
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                     }
                 });
+                document.getElementById('loading').style.display = 'none'; // Hide loading indicator
+
                 if (response.ok) {
                     // If form submission is successful
                     document.getElementById('formMessage').style.display = 'block';
                     document.getElementById('formError').style.display = 'none';
                     // Optionally, display form submission summary
-                    displayFormSummary(formData);
+                    displayFormSummary(formDataObj);
                     this.reset();  // Reset the form after successful submission
                 } else {
                     // Log the response status and text for debugging
@@ -151,17 +156,5 @@
         // Function to display the form submission summary
         function displayFormSummary(formData) {
             const summaryElement = document.getElementById('summary');
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const contact = formData.get('contact');
-            const phone = formData.get('phone');
-            summaryElement.innerHTML = `
-                <strong>Form Submission Summary:</strong><br>
-                Name: ${name}<br>
-                Email: ${email}<br>
-                Preferred Contact: ${contact === 'phone' ? \`Phone (\${phone})\` : 'Email'}
-            `;
-        }
-    </script>
-</body>
-</html>
+            const {
+
