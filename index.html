@@ -115,14 +115,14 @@
 
         // Function to handle form submission and provide real-time feedback
         document.getElementById('userForm').addEventListener('submit', async function (event) {
-            event.preventDefault();  // Prevent default form submission
-            const formData = new FormData(this);  // Capture form data
+            event.preventDefault(); // Prevent default form submission
+            const formData = new FormData(this); // Capture form data
             const formDataObj = Object.fromEntries(formData.entries()); // Convert to object
-            console.log('FormData Object:', formDataObj);  // Log FormData object to console
+            console.log('FormData Object:', formDataObj); // Log FormData object to console
             document.getElementById('loading').style.display = 'block'; // Show loading indicator
 
             try {
-                const response = await fetch(http://localhost:3000/send-email', {
+                const response = await fetch('/.netlify/functions/send-email', {
                     method: 'POST',
                     body: JSON.stringify(formDataObj),
                     headers: {
@@ -136,14 +136,14 @@
                     // If form submission is successful
                     document.getElementById('formMessage').style.display = 'block';
                     document.getElementById('formError').style.display = 'none';
-                    // Optionally, display form submission summary
-                    displayFormSummary(formDataObj);
-                    this.reset();  // Reset the form after successful submission
+                    displayFormSummary(formDataObj); // Display form submission summary
+                    this.reset(); // Reset the form after successful submission
                 } else {
                     // Log the response status and text for debugging
                     const errorText = await response.text();
                     console.error('Form submission failed:', response.status, errorText);
-                    throw new Error('Form submission failed');
+                    document.getElementById('formError').style.display = 'block';
+                    document.getElementById('formMessage').style.display = 'none';
                 }
             } catch (error) {
                 // If an error occurs during form submission
@@ -153,8 +153,15 @@
             }
         });
 
-        // Function to display the form submission summary
-        function displayFormSummary(formData) {
-            const summaryElement = document.getElementById('summary');
-            const {
-
+        // Function to display a summary of the form submission
+        function displayFormSummary(data) {
+            const summary = document.getElementById('summary');
+            summary.innerHTML = `
+                <strong>Name:</strong> ${data.name}<br>
+                <strong>Email:</strong> ${data.email}<br>
+                <strong>Preferred Contact Method:</strong> ${data.contact}${data.contact === 'phone' ? `<br><strong>Phone Number:</strong> ${data.phone}` : ''}<br>
+            `;
+        }
+    </script>
+</body>
+</html>

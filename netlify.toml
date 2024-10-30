@@ -1,4 +1,5 @@
 [build]
+  publish = "." # Set this to your project's main directory if that's where index.html is located
   functions = "netlify/functions"
 
 [functions]

@@ -1,4 +1,15 @@
+const express = require('express');
 const nodemailer = require('nodemailer');
+const bodyParser = require('body-parser');
+const path = require('path');
+require('dotenv').config(); // Load environment variables from .env file
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(bodyParser.json()); // Parse JSON bodies
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
 // Create a transporter using the default SMTP transport
 const transporter = nodemailer.createTransport({
@@ -7,15 +18,17 @@ const transporter = nodemailer.createTransport({
         user: process.env.EMAIL_USER, // Your email address
         pass: process.env.EMAIL_PASS, // Your email password or app-specific password
     },
-    debug: true, // Show debug output
-    logger: true // Enable logging
 });
 
-// Define the handler function that Netlify will call
-exports.handler = async (event) => {
+// Serve the HTML file
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Define the email sending route
+app.post('/send-email', async (req, res) => {
     try {
-        // Parse the request body to get email details
-        const { to, subject, body, isHTML = false } = JSON.parse(event.body);
+        const { to, subject, body, isHTML = false } = req.body;
 
         // Create mail options
         const mailOptions = {
@@ -30,17 +43,15 @@ exports.handler = async (event) => {
         await transporter.sendMail(mailOptions);
         console.log('Email sent successfully to:', to);
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: 'Email sent successfully' }),
-        };
+        return res.status(200).json({ message: 'Email sent successfully' });
     } catch (error) {
         console.error('Error sending email:', error.message);
 
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ message: `Failed to send email: ${error.message}` }),
-        };
+        return res.status(500).json({ message: `Failed to send email: ${error.message}` });
     }
-};
+});
 
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
