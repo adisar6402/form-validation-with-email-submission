@@ -6,20 +6,15 @@
     <title>Interactive Form Handling</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Favicon -->
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- Header Section -->
     <header class="header-section">
         <h1>Interactive Form Data Processing</h1>
         <p>Empowering seamless user interactions with real-time feedback and data processing</p>
     </header>
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- About Me Section -->
         <section id="about-me" class="about-me-section">
             <div class="profile-image-container">
                 <img src="images/photo.jpg" alt="Abdulrahman's Profile Picture" class="profile-image">
@@ -27,44 +22,50 @@
             <div class="about-me-text">
                 <h2>About Me</h2>
                 <p>
-                    Hello! I'm Abdulrahman, a passionate front-end developer and AI enthusiast. With a solid background in web technologies and machine learning,
-                    I enjoy building dynamic, user-centric websites that seamlessly blend functionality and creativity. Currently, I'm honing my skills in JavaScript
-                    and data handling, aiming to create more interactive and efficient user experiences.
+                    Hello! I'm Abdulrahman, a passionate front-end developer and AI enthusiast. 
+                    I enjoy building dynamic, user-centric websites that seamlessly blend functionality and creativity. 
+                    Currently, I'm honing my skills in JavaScript and data handling, aiming to create more interactive and efficient user experiences.
                     <br><br>
-                    I believe in continuous learning and love exploring new technologies that push the boundaries of web development. Outside coding, I’m deeply involved
-                    in climate action projects, advocating for sustainability through technology and education.
+                    I believe in continuous learning and love exploring new technologies that push the boundaries of web development. 
+                    Outside coding, I’m deeply involved in climate action projects, advocating for sustainability through technology and education.
                 </p>
             </div>
         </section>
-        <!-- Form Section -->
+        
         <section id="form-section" class="form-section">
             <h2>Contact Information</h2>
             <p>Please fill out the form below to get in touch. Your information will be processed securely, and we'll get back to you shortly.</p>
-            <form id="userForm" enctype="multipart/form-data" method="POST" action="/.netlify/functions/send-email">
+            <form id="userForm" enctype="multipart/form-data" method="POST" action="/send-email"> <!-- Updated Action -->
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required autocomplete="name">
+                
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" required autocomplete="email">
+                
                 <label for="contact">Preferred Contact Method:</label>
                 <select id="contact" name="contact" required>
                     <option value="" disabled selected>Select a contact method</option>
                     <option value="email">Email</option>
                     <option value="phone">Phone</option>
                 </select>
+                
                 <label for="phoneInput" style="display: none;" id="phoneLabel">Phone Number:</label>
                 <input type="tel" id="phoneInput" name="phone" style="display: none;" autocomplete="tel">
+                
                 <label>
                     <input type="checkbox" id="terms" name="terms" required> I accept the terms and conditions
                 </label>
+                
                 <button type="submit" id="submitBtn">Submit</button>
+                
                 <p id="formMessage" style="color: green; display: none;">Thank you! Your submission was received successfully.</p>
                 <p id="formError" style="color: red; display: none;">Oops! Something went wrong. Please try again later.</p>
-                <div id="loading" style="display: none;">Submitting... Please wait.</div> <!-- Loading indicator -->
+                <div id="loading" style="display: none;">Submitting... Please wait.</div>
             </form>
         </section>
-        <!-- Divider Image -->
+        
         <div class="divider"></div>
-        <!-- Form Submission Summary -->
+        
         <section id="formSummary" class="form-summary">
             <div>
                 <h2>Form Submission Summary</h2>
@@ -75,32 +76,23 @@
             </div>
         </section>
     </main>
-    <!-- Footer Section with Social Media Links -->
+    
     <footer class="footer-section">
         <p>&copy; 2024 Abdulrahman | Interactive Form Handling Project</p>
-        <!-- Social Media Icons -->
         <div class="social-icons">
-            <a href="https://github.com/adisar6402" target="_blank" title="GitHub Profile">
-                <i class="fab fa-github fa-2x"></i> GitHub
-            </a>
-            <a href="https://twitter.com/RahmanAdis42469" target="_blank" title="Twitter Profile">
-                <i class="fab fa-twitter fa-2x"></i> Twitter
-            </a>
-            <a href="https://www.linkedin.com/in/abdulrahman--engineering-ai-ml/" target="_blank" title="LinkedIn Profile">
-                <i class="fab fa-linkedin fa-2x"></i> LinkedIn
-            </a>
-            <a href="https://facebook.com/Abdulrahman.Adisa.Amuda2000" target="_blank" title="Facebook Profile">
-                <i class="fab fa-facebook fa-2x"></i> Facebook
-            </a>
+            <a href="https://github.com/adisar6402" target="_blank" title="GitHub Profile"><i class="fab fa-github fa-2x"></i> GitHub</a>
+            <a href="https://twitter.com/RahmanAdis42469" target="_blank" title="Twitter Profile"><i class="fab fa-twitter fa-2x"></i> Twitter</a>
+            <a href="https://www.linkedin.com/in/abdulrahman--engineering-ai-ml/" target="_blank" title="LinkedIn Profile"><i class="fab fa-linkedin fa-2x"></i> LinkedIn</a>
+            <a href="https://facebook.com/Abdulrahman.Adisa.Amuda2000" target="_blank" title="Facebook Profile"><i class="fab fa-facebook fa-2x"></i> Facebook</a>
         </div>
         <p>
             <a href="privacy-policy.html">Privacy Policy</a> |
             <a href="terms-conditions.html">Terms and Conditions</a>
         </p>
     </footer>
-    <!-- JavaScript -->
+    
     <script>
-        // Function to handle the visibility of the phone input based on the selected contact method
+        // Show/Hide phone input based on selected contact method
         document.getElementById('contact').addEventListener('change', function () {
             const phoneInput = document.getElementById('phoneInput');
             const phoneLabel = document.getElementById('phoneLabel');
@@ -113,7 +105,7 @@
             }
         });
 
-        // Function to handle form submission and provide real-time feedback
+        // Handle form submission
         document.getElementById('userForm').addEventListener('submit', async function (event) {
             event.preventDefault(); // Prevent default form submission
             const formData = new FormData(this); // Capture form data
@@ -122,7 +114,7 @@
             document.getElementById('loading').style.display = 'block'; // Show loading indicator
 
             try {
-                const response = await fetch('/.netlify/functions/send-email', {
+                const response = await fetch('/send-email', { // Updated URL for form submission
                     method: 'POST',
                     body: JSON.stringify(formDataObj),
                     headers: {
@@ -133,27 +125,24 @@
                 document.getElementById('loading').style.display = 'none'; // Hide loading indicator
 
                 if (response.ok) {
-                    // If form submission is successful
                     document.getElementById('formMessage').style.display = 'block';
                     document.getElementById('formError').style.display = 'none';
                     displayFormSummary(formDataObj); // Display form submission summary
                     this.reset(); // Reset the form after successful submission
                 } else {
-                    // Log the response status and text for debugging
                     const errorText = await response.text();
                     console.error('Form submission failed:', response.status, errorText);
                     document.getElementById('formError').style.display = 'block';
                     document.getElementById('formMessage').style.display = 'none';
                 }
             } catch (error) {
-                // If an error occurs during form submission
                 console.error('There was a problem with your submission:', error);
                 document.getElementById('formError').style.display = 'block';
                 document.getElementById('formMessage').style.display = 'none';
             }
         });
 
-        // Function to display a summary of the form submission
+        // Display summary of the form submission
         function displayFormSummary(data) {
             const summary = document.getElementById('summary');
             summary.innerHTML = `

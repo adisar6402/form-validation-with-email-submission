@@ -28,20 +28,20 @@ app.get('/', (req, res) => {
 // Define the email sending route
 app.post('/send-email', async (req, res) => {
     try {
-        const { to, subject, body, isHTML = false } = req.body;
+        const { name, email, contact, phone } = req.body; // Adjusted to match the form fields
 
         // Create mail options
         const mailOptions = {
             from: process.env.EMAIL_USER, // Sender address
-            to: to, // Recipient address
-            subject: subject, // Subject line
-            text: isHTML ? undefined : body, // Plain text body
-            html: isHTML ? body : undefined, // HTML body if required
+            to: process.env.EMAIL_USER, // Send to yourself or adjust as needed
+            subject: `New contact from ${name}`, // Dynamic subject
+            text: `You have a new message from ${name} (${email}). Preferred contact method: ${contact}. Phone: ${phone || 'N/A'}`,
+            html: `<p>You have a new message from <strong>${name}</strong> (${email}).</p><p>Preferred contact method: <strong>${contact}</strong></p><p>Phone: <strong>${phone || 'N/A'}</strong></p>`, // HTML body
         };
 
         // Send the email
         await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully to:', to);
+        console.log('Email sent successfully to:', process.env.EMAIL_USER);
 
         return res.status(200).json({ message: 'Email sent successfully' });
     } catch (error) {
